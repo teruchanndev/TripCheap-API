@@ -49,7 +49,7 @@ exports.customerLogin = (req, res, next) => {
           }
           const token = jwt.sign(
               {email: fetchCustomer.email, customerId: fetchCustomer._id},
-              process.env.JWT_KEY,
+              "secret_this_should_be_longer",
               {expiresIn: '1h'}
           );
           console.log('token: ' + token);
@@ -81,7 +81,7 @@ exports.getInfoCustomer = (req, res, next) => {
         }
   }).catch(error => {
       res.status(500).json({
-          message: "Fetching info customer failed!"
+          message: "Fetching info customer failed!" + error + req.userData.customerId
       })
   })
 }
