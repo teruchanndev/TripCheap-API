@@ -2,7 +2,7 @@ const Ticket = require("../models/ticket");
 
 exports.createTicket = (req, res, next) => {
   const url = req.protocol + '://' + req.get('host');
-
+  
   const arr = [];
   for(let i = 0; i<req.files.length; i++){
     arr[i] = url + '/images/' + req.files[i].filename;
@@ -41,7 +41,6 @@ exports.createTicket = (req, res, next) => {
 }
 
 exports.updateTicket  = (req, res, next) => {
-
   const arr = [];
   if (req.files) {
     const url = req.protocol + "://" + req.get("host");
@@ -82,7 +81,7 @@ exports.updateTicket  = (req, res, next) => {
 
   }).catch(error => {
     res.status(500).json({
-      message: "Couldn't update ticket!"
+      message: "Couldn't update ticket!"  + error + req.protocol + "://" + req.get("host")
     })
   })
 }

@@ -1,27 +1,27 @@
 const express = require("express");
 
 const CartController = require('../controllers/carts');
-const checkAuth = require('../middleware/check-auth');
+const checkAuthCustomer = require('../middleware/check-auth-customer');
 const router = express.Router();
 
 //create 1 item cart
-router.post("", checkAuth, CartController.createCart);
+router.post("", checkAuthCustomer, CartController.createCart);
 
 //update
-router.put("/:id", checkAuth, CartController.updateCart);
+router.put("/:id", checkAuthCustomer, CartController.updateCart);
 
 //lấy danh sách cart
-router.get("", checkAuth, CartController.getAllCart);
+router.get("", checkAuthCustomer, CartController.getAllCart);
 
-router.get("/update/:id", checkAuth, CartController.getOneCart);
+router.get("/update/:id", checkAuthCustomer, CartController.getOneCart);
 
-router.get("/count", checkAuth, CartController.getCountCartOfCustomer);
+router.get("/count", checkAuthCustomer, CartController.getCountCartOfCustomer);
 
-router.get("/cart", checkAuth, CartController.getCartOfCustomer);
+router.get("/cart", checkAuthCustomer, CartController.getCartOfCustomer);
 
-router.get("/pay/:id", checkAuth, CartController.getCartToPay);
+router.get("/pay/:id", checkAuthCustomer, CartController.getCartToPay);
 
-router.delete("/list/:id", checkAuth, CartController.deleteCart);
+router.delete("/list/:id", checkAuthCustomer, CartController.deleteCart);
 
 
 module.exports = router;

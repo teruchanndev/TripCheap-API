@@ -2,6 +2,8 @@ const Order = require("../models/order");
 
 exports.createOrder = (req, res, next) => {
   // console.log(req);
+  const url = req.protocol + "://" + req.get("host");
+  qrcode = url + '/images/' + req.files.filename;
   const order = new Order({
     nameTicket: req.body.nameTicket,
     imageTicket: req.body.imageTicket,
@@ -13,7 +15,8 @@ exports.createOrder = (req, res, next) => {
     itemService: req.body.itemService,
     payMethod: req.body.payMethod,
     status: req.body.status,
-    isCancel: req.body.isCancel
+    isCancel: req.body.isCancel,
+    qrcode: qrcode
   });
   // console.log(order);
   order.save().then(createdOrder => {
@@ -26,7 +29,7 @@ exports.createOrder = (req, res, next) => {
     });
   }).catch(error => {
     res.status(500).json({
-      message: 'Creating a Order failed!'
+      message: 'Creating a Order failed!' + error
     })
   })
 }
@@ -94,7 +97,8 @@ exports.getAllOrder = (req, res, next) => {
   Order.find({idCustomer: req.userData.customerId}).then(documents => {
     res.status(200).json({
       message: "Order fetched successfully!",
-      order: documents
+      order: documents,
+      id: req.userData.customerId
     });
   });
 }
@@ -158,7 +162,8 @@ exports.getOrderOfCustomer = (req, res, next) => {
     document => {
       res.status(200).json({
         message: "Fetching order successfully!",
-        order: document
+        order: document,
+        id: req.userData.customerId
       });
     }).catch(error => {
       res.status(500).json({
@@ -172,7 +177,8 @@ exports.getOrderOfCreator = (req, res, next) => {
     Order.find({idCreator: req.userData.userId}).then(documents => {
       res.status(200).json({
         message: "Order fetched successfully!",
-        order: documents
+        order: documents,
+        id: req.userData.customerId
       });
     });
   }

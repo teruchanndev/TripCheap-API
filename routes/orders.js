@@ -2,18 +2,20 @@ const express = require("express");
 
 const OrderController = require('../controllers/orders');
 const checkAuth = require('../middleware/check-auth');
+const checkAuthCustomer = require('../middleware/check-auth-customer');
+const extractFile = require('../middleware/file');
 const router = express.Router();
 
 //create 1 item cart
-router.post("", checkAuth, OrderController.createOrder);
+router.post("", checkAuthCustomer, extractFile, OrderController.createOrder);
 
 //update
-router.put("/:id", checkAuth, OrderController.updateOrder);
+router.put("/:id", checkAuth, extractFile, OrderController.updateOrder);
 
 router.put("/:id/isSuccess", checkAuth, OrderController.updateIsSuccessOrder);
 
 //lấy danh sách cart theo id Customer (client)
-router.get("", checkAuth, OrderController.getAllOrder);
+router.get("", checkAuthCustomer, OrderController.getAllOrder);
 router.get("/manager", checkAuth, OrderController.getOrderOfCreator);
 
 router.get("/:id", checkAuth, OrderController.getOneOrder);
