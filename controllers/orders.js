@@ -75,15 +75,9 @@ exports.getAllOrder = (req, res, next) => {
 
   const now = new Date();
   Order.find({idCustomer: req.userData.customerId}).then(documents => {
-    // console.log('documents.length: ' + documents.length);
     for(let i = 0; i < documents.length; i++) {
-      // var part = documents[i].dateEnd.split('/');
-      // var d = new Date(part[2] + '-'+ part[1] + '-' + part[0]);
       var check = checkCompareDate(documents[i].dateEnd);
-      // var checkDate = (d < now); //true => đã quá hạn
-      // console.log('checkDate: ' + check);
       if(check < 0) {
-        // console.log('documents: ' + documents[i]);
         Order.updateOne({_id: documents[i]._id}, { $set:{ status: true } })
         .then(result => {
           // console.log(result);
@@ -173,13 +167,29 @@ exports.getOrderOfCustomer = (req, res, next) => {
 }
 
 exports.getOrderOfCreator = (req, res, next) => {
-    console.log('req user: ' + req.userData);
-    Order.find({idCreator: req.userData.userId}).then(documents => {
-      res.status(200).json({
-        message: "Order fetched successfully!",
-        order: documents,
-        id: req.userData.customerId
-      });
+  const now = new Date();
+  Order.find({idCreator: req.userData.userId}).then(documents => {
+    for(let i = 0; i < documents.length; i++) {
+      var check = checkCompareDate(documents[i].dateEnd);
+      if(check < 0) {
+        Order.updateOne({_id: documents[i]._id}, { $set:{ status: true } })
+        .then(result => {
+          console.log('-----------------------------');
+           console.log(result);
+        }).catch(error => {
+           console.log('error: ' + result);
+        });
+      }
+    } 
+  });
+
+  Order.find({idCreator: req.userData.userId}).then(documents => {
+    res.status(200).json({
+      message: "Order fetched successfully!",
+      order: documents,
+      id: req.userData.userId
     });
-  }
+  });
+
+}
 

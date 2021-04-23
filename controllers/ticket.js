@@ -2,12 +2,12 @@ const Ticket = require("../models/ticket");
 
 exports.createTicket = (req, res, next) => {
 
-  const url = req.protocol + '://' + req.get('host');
-  const arr = [];
-  for(let i = 0; i<req.files.length; i++){
-    arr[i] = url + '/images/' + req.files[i].filename;
-  }
-  const lisService = JSON.parse("[" + req.body.services + "]");
+  // const url = req.protocol + '://' + req.get('host');
+  // const arr = [];
+  // for(let i = 0; i<req.files.length; i++){
+  //   arr[i] = url + '/images/' + req.files[i].filename;
+  // }
+  // const lisService = JSON.parse("[" + req.body.services + "]");
   const ticket = new Ticket({
     title: req.body.title,
     content: req.body.content,
@@ -19,8 +19,8 @@ exports.createTicket = (req, res, next) => {
     price_reduce: req.body.price_reduce,
     city: req.body.city,
     quantity: req.body.quantity,
-    services: lisService,
-    imagePath: arr,
+    services: req.body.services,
+    imagePath: req.body.imagePath,
     address: req.body.address,
     creator: req.userData.userId
   });
@@ -42,17 +42,18 @@ exports.createTicket = (req, res, next) => {
 
 exports.updateTicket  = (req, res, next) => {
 
-  const arr = [];
-  if (req.files) {
-    const url = req.protocol + "://" + req.get("host");
-    for(let i = 0; i<req.files.length; i++){
-      arr[i] = url + '/images/' + req.files[i].filename;
-    }
-  }
-  const lisService = JSON.parse("[" + req.body.services + "]");
-  var imageOlds = JSON.parse(req.body.imageUrls);
-  var images = arr.concat(imageOlds);
-
+  // const arr = [];
+  // if (req.files) {
+  //   const url = req.protocol + "://" + req.get("host");
+  //   for(let i = 0; i<req.files.length; i++){
+  //     arr[i] = url + '/images/' + req.files[i].filename;
+  //   }
+  // }
+  // const lisService = JSON.parse("[" + req.body.services + "]");
+  // var imageOlds = JSON.parse(req.body.imageUrls);
+  // var images = arr.concat(imageOlds);
+  // console.log('-----------------------------------');
+  // console.log('BODY: ' + req.body.imagePath);
   const ticket = new Ticket({
     _id: req.body.id,
     title: req.body.title,
@@ -65,9 +66,9 @@ exports.updateTicket  = (req, res, next) => {
     price_reduce: req.body.price_reduce,
     city: req.body.city,
     quantity: req.body.quantity,
-    imagePath: images,
+    imagePath: req.body.imagePath,
     address: req.body.address,
-    services: lisService
+    services: req.body.services
   });
 
   Ticket.updateOne(
