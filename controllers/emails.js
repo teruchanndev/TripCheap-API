@@ -23,10 +23,12 @@ exports.sendEmail = (req, res, next) => {
 
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
-      console.log(error);
+      res.status(500).json({ message: "Send failed!"});
     } else {
-      console.log(info);
-      // console.log('Email sent: ' + info.response);
+      res.status(200).json({
+        message: 'Send email successfully!',
+        info: info
+      });
     }
   });
 

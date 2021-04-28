@@ -13,8 +13,7 @@ const orderSchema = mongoose.Schema({
   status: { type: Boolean },
   isCancel: { type: Boolean },
   isSuccess: { type: Boolean },
-  isConfirm: { type: Boolean },
-  qrcode: { type: String }
+  isConfirm: { type: Boolean }
 });
 
 module.exports = mongoose.model('Order', orderSchema);

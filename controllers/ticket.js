@@ -1,13 +1,6 @@
 const Ticket = require("../models/ticket");
 
 exports.createTicket = (req, res, next) => {
-
-  // const url = req.protocol + '://' + req.get('host');
-  // const arr = [];
-  // for(let i = 0; i<req.files.length; i++){
-  //   arr[i] = url + '/images/' + req.files[i].filename;
-  // }
-  // const lisService = JSON.parse("[" + req.body.services + "]");
   const ticket = new Ticket({
     title: req.body.title,
     content: req.body.content,
@@ -35,25 +28,13 @@ exports.createTicket = (req, res, next) => {
     });
   }).catch(error => {
     res.status(500).json({
-      message: 'Creating a ticket failed!'
+      message: 'Creating a ticket failed!' + error
     })
   })
 }
 
 exports.updateTicket  = (req, res, next) => {
 
-  // const arr = [];
-  // if (req.files) {
-  //   const url = req.protocol + "://" + req.get("host");
-  //   for(let i = 0; i<req.files.length; i++){
-  //     arr[i] = url + '/images/' + req.files[i].filename;
-  //   }
-  // }
-  // const lisService = JSON.parse("[" + req.body.services + "]");
-  // var imageOlds = JSON.parse(req.body.imageUrls);
-  // var images = arr.concat(imageOlds);
-  // console.log('-----------------------------------');
-  // console.log('BODY: ' + req.body.imagePath);
   const ticket = new Ticket({
     _id: req.body.id,
     title: req.body.title,
@@ -90,7 +71,6 @@ exports.updateTicket  = (req, res, next) => {
 
 
 exports.getAllTicket = (req, res, next) => {
-
   Ticket.find({creator: req.userData.userId}).then(documents => {
     res.status(200).json({
       message: "Tickets fetched successfully!",
@@ -118,6 +98,24 @@ exports.getTicketOfCity = (req, res, next) => {
     })
   })
 }
+
+exports.getTicketOfSearch = (req, res, next) => {
+  // console.log(req.params.city);
+  // arr = req.params.city.split('%20');
+  // city = arr.join(' ');
+  Ticket.find({title: {$regex: new RegExp(req.params.search, "i") }}).then(documents => {
+    res.status(200).json({
+      message: "Tickets fetched successfully!" + documents,
+      ticket: documents
+    });
+  }).catch(error => {
+    res.status(500).json({
+      message: 'Fetching tickets failed!'
+    })
+  })
+}
+
+
 
 
 
@@ -156,13 +154,13 @@ exports.deleteOneTicket = (req, res, next) => {
   Ticket.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(
     result => {
     if(result.n > 0) {
-      res.status(200).json({ message: "Ticket deleted!" });
+      res.status(200).json({ message: "Xóa vé thành công!" });
      } else {
-      res.status(401).json({ message: "Not authorized!" });
+      res.status(401).json({ message: "Chưa đăng nhập!" });
      }
   }).catch(error => {
     res.status(500).json({
-      message: 'Fetching ticket failed!'
+      message: 'Không thể xóa vé!'
     })
   })
 }

@@ -1,6 +1,5 @@
 const express = require("express");
 
-const extractFile = require('../middleware/file');
 const checkAuth = require('../middleware/check-auth');
 const TicketController = require("../controllers/ticket");
 
@@ -10,16 +9,15 @@ router.post("",
   checkAuth,
   TicketController.createTicket);
 
-router.put("/:id",
-  checkAuth,
-  TicketController.updateTicket);
+router.put("/:id",checkAuth, TicketController.updateTicket);
 
-router.get("", checkAuth, TicketController.getAllTicket);
+router.get("", checkAuth,TicketController.getAllTicket);
 
 router.get("/all", TicketController.getAll);
 
-// router.get("/detail/:id", TicketController.getOneTicket);
 router.get("/city/:city", TicketController.getTicketOfCity);
+
+router.get("/search/:search", TicketController.getTicketOfSearch);
 
 router.get("/:id", TicketController.getOneTicket);
 

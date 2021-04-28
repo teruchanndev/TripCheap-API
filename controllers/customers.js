@@ -71,7 +71,7 @@ exports.customerLogin = (req, res, next) => {
 
 
 exports.getInfoCustomer = (req, res, next) => {
-  console.log('res: ' + req.userData.userId);
+//   console.log('res: ' + req.userData.userId);
   Customer.findById({_id: req.userData.customerId})
     .then(documents => {
         if(documents) {
@@ -81,7 +81,7 @@ exports.getInfoCustomer = (req, res, next) => {
         }
   }).catch(error => {
       res.status(500).json({
-          message: "Fetching info customer failed!" + error + req.userData.customerId
+        message: "Fetching info customer failed!" + error + req.userData.customerId
       })
   })
 }
