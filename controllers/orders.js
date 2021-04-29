@@ -1,9 +1,9 @@
 const Order = require("../models/order");
 
 exports.createOrder = (req, res, next) => {
-  // console.log(req);
-  const url = req.protocol + "://" + req.get("host");
-  qrcode = url + '/images/' + req.files.filename;
+  // // console.log(req);
+  // const url = req.protocol + "://" + req.get("host");
+  // qrcode = url + '/images/' + req.files.filename;
   const order = new Order({
     nameTicket: req.body.nameTicket,
     imageTicket: req.body.imageTicket,
@@ -15,8 +15,7 @@ exports.createOrder = (req, res, next) => {
     itemService: req.body.itemService,
     payMethod: req.body.payMethod,
     status: req.body.status,
-    isCancel: req.body.isCancel,
-    qrcode: qrcode
+    isCancel: req.body.isCancel
   });
   // console.log(order);
   order.save().then(createdOrder => {
@@ -48,11 +47,12 @@ exports.updateOrder = (req, res, next) => {
 }
 
 exports.updateIsSuccessOrder = (req, res, next) => {
-  // console.log(req.body.id);
-  Order.updateOne({_id: req.body.id},  { $set: { isSuccess: req.body.isSuccess, isConfirm: req.body.isConfirm} })
+  // console.log('----------------------------------------');
+  console.log('req: ', req.body);
+  Order.updateOne({_id: req.body.id},  { $set: { isConfirm: req.body.isConfirm, isCancel: req.body.isCancel} })
   .then(result => {
     // console.log(result);
-    res.status(200).json({ message: "Update successful!" + result });
+    res.status(200).json({ message: "Update successful!"});
   }).catch(error => {
     res.status(500).json({
       message: 'Update failed!' + error
@@ -75,15 +75,9 @@ exports.getAllOrder = (req, res, next) => {
 
   const now = new Date();
   Order.find({idCustomer: req.userData.customerId}).then(documents => {
-    // console.log('documents.length: ' + documents.length);
     for(let i = 0; i < documents.length; i++) {
-      // var part = documents[i].dateEnd.split('/');
-      // var d = new Date(part[2] + '-'+ part[1] + '-' + part[0]);
       var check = checkCompareDate(documents[i].dateEnd);
-      // var checkDate = (d < now); //true => đã quá hạn
-      // console.log('checkDate: ' + check);
       if(check < 0) {
-        // console.log('documents: ' + documents[i]);
         Order.updateOne({_id: documents[i]._id}, { $set:{ status: true } })
         .then(result => {
           // console.log(result);
@@ -173,13 +167,29 @@ exports.getOrderOfCustomer = (req, res, next) => {
 }
 
 exports.getOrderOfCreator = (req, res, next) => {
-    console.log('req user: ' + req.userData);
-    Order.find({idCreator: req.userData.userId}).then(documents => {
-      res.status(200).json({
-        message: "Order fetched successfully!",
-        order: documents,
-        id: req.userData.customerId
-      });
+  const now = new Date();
+  Order.find({idCreator: req.userData.userId}).then(documents => {
+    for(let i = 0; i < documents.length; i++) {
+      var check = checkCompareDate(documents[i].dateEnd);
+      if(check < 0) {
+        Order.updateOne({_id: documents[i]._id}, { $set:{ status: true } })
+        .then(result => {
+          // console.log('-----------------------------');
+           console.log(result);
+        }).catch(error => {
+           console.log('error: ' + result);
+        });
+      }
+    } 
+  });
+
+  Order.find({idCreator: req.userData.userId}).then(documents => {
+    res.status(200).json({
+      message: "Order fetched successfully!",
+      order: documents,
+      id: req.userData.userId
     });
-  }
+  });
+
+}
 

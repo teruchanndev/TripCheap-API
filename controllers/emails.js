@@ -18,18 +18,21 @@ exports.sendEmail = (req, res, next) => {
     from: '"Tripcheap" <tripcheap.pay@gmail.com>',
     to: req.body.to,
     subject: req.body.subject,
-    text: req.body.html
+    html: req.body.html
   };
 
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
-      console.log(error);
+      res.status(500).json({ message: "Send failed!"});
     } else {
-      console.log('Email sent: ' + info.response);
+      res.status(200).json({
+        message: 'Send email successfully!',
+        info: info
+      });
     }
   });
 
-  console.log("Message sent: %s", info.messageId);
+  // console.log("Message sent: %s", info.messageId);
   
 }
 

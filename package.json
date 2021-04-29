@@ -23,8 +23,10 @@
     "mongoose": "^5.12.4",
     "mongoose-unique-validator": "^2.0.3",
     "multer": "^1.4.2",
+    "multer-gridfs-storage": "^4.2.0",
     "nodemailer": "^6.5.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "rxjs": "^6.6.7"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"

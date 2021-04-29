@@ -71,7 +71,7 @@ exports.customerLogin = (req, res, next) => {
 
 
 exports.getInfoCustomer = (req, res, next) => {
-  console.log('res: ' + req.userData.userId);
+//   console.log('res: ' + req.userData.userId);
   Customer.findById({_id: req.userData.customerId})
     .then(documents => {
         if(documents) {
@@ -81,7 +81,7 @@ exports.getInfoCustomer = (req, res, next) => {
         }
   }).catch(error => {
       res.status(500).json({
-          message: "Fetching info customer failed!" + error + req.userData.customerId
+        message: "Fetching info customer failed!" + error + req.userData.customerId
       })
   })
 }
@@ -127,3 +127,39 @@ exports.updateInfo = (req, res, next) => {
           })
     })
 }
+
+exports.changePassword = (req, res, next) => {
+    bcrypt.hash(req.body, 10)
+        .then(hash => {
+            Customer.updateOne({ _id: req.userData.customerId}, {password: hash})
+                .then(result => 
+                    {
+                        res.status(200).json({
+                            message: 'Change password successfully!',
+                            result: result
+                        })
+                    }).catch(error => {
+                        res.status(500).json({
+                            message: 'Change password failed!',
+                            error: error
+                        })
+                    });
+        });
+  }
+
+  exports.deleteAccount = (req, res, next) => {
+    // console.log('----------------');
+    // console.log('req: ', req.params)
+    Customer.deleteOne({ _id: req.params.id}).then(
+        result => {
+        if(result.n > 0) {
+          res.status(200).json({ message: "Xóa tài khoản thành công!" });
+         } else {
+          res.status(401).json({ message: "Chưa đăng nhập!" });
+         }
+      }).catch(error => {
+        res.status(500).json({
+          message: 'Xóa tài khoản thất bại!'
+        })
+      })
+  }

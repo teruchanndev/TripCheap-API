@@ -73,7 +73,9 @@ exports.getOneCart = (req, res, next) => {
 }
 
 exports.deleteCart = (req, res, next) => {
-  // console.log(req.params.id);
+  console.log('----------------------------------------------------------');
+  console.log(req.params.id);
+
   arrId = req.params.id.split(',');
   for(let item of arrId) {
     console.log(item);
@@ -82,7 +84,7 @@ exports.deleteCart = (req, res, next) => {
       if(result.n > 0) {
         res.status(200).json({ message: "Cart deleted!" });
       } else {
-        res.status(401).json({ message: "Not authorized!" });
+        res.status(401).json({ message: "Not authorized!" + result });
       }
     }).catch(error => {
       res.status(500).json({

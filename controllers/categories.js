@@ -34,7 +34,7 @@ exports.getAllCategory = (req, res, next) => {
 }
 
 exports.getOneCategory = (req, res, next) => {
-  Category.findById(req.params.id).then(category => {
+  Category.findOne({name: req.params.name}).then(category => {
     if (category) {
       res.status(200).json(category);
     } else {
