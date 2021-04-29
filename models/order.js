@@ -14,6 +14,6 @@ const orderSchema = mongoose.Schema({
   isCancel: { type: Boolean },
   isSuccess: { type: Boolean },
   isConfirm: { type: Boolean }
-});
+}, { timestamps: { createdAt: 'created_at' } });
 
 module.exports = mongoose.model('Order', orderSchema);

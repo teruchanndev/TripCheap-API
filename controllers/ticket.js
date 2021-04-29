@@ -100,9 +100,6 @@ exports.getTicketOfCity = (req, res, next) => {
 }
 
 exports.getTicketOfSearch = (req, res, next) => {
-  // console.log(req.params.city);
-  // arr = req.params.city.split('%20');
-  // city = arr.join(' ');
   Ticket.find({title: {$regex: new RegExp(req.params.search, "i") }}).then(documents => {
     res.status(200).json({
       message: "Tickets fetched successfully!" + documents,
@@ -165,6 +162,44 @@ exports.deleteOneTicket = (req, res, next) => {
   })
 }
 
+exports.getTicketOfCategory = (req, res, next) => {
+  console.log(req.params.category);
+  arr = req.params.category.split('%20');
+  category = arr.join(' ');
+  Ticket.find({category: category}).then(documents => {
+    res.status(200).json({
+      message: "Tickets fetched successfully!" + documents,
+      ticket: documents
+    });
+  }).catch(error => {
+    res.status(500).json({
+      message: 'Fetching tickets failed!'
+    })
+  })
+}
 
+exports.updateTicketQuantity = (req, res, next) => {
+  // console.log('---------------------');
+  // console.log(req.body);
 
+  Ticket.find({_id: req.params.id}).then(ticket => {
+    // console.log('ticket quantity: ', ticket[0].quantity);
+    // console.log('quantity: ', req.body.quantity);
+    var quantityNew = ticket[0].quantity - req.body.quantity;
+    // console.log('quantityNew: ', quantityNew);
+    Ticket.updateOne({_id: req.params.id}, {quantity: quantityNew}).then(result => {
+      if(result.n > 0) {
+        res.status(200).json({ message: "Update successful!" });
+      } else {
+        res.status(401).json({
+          message: "Not authorized!" });
+      }
+  }).catch(error => {
+    res.status(500).json({
+      message: "Couldn't update ticket!"
+    });
+  });
+  });
+
+}
 

@@ -10,9 +10,13 @@ router.post('/signup', CustomerController.createCustomer);
 
 router.post('/login', CustomerController.customerLogin );
 
-router.get("/info", checkAuth, extractFile, CustomerController.getInfoCustomer);
+router.get("/info", checkAuth, CustomerController.getInfoCustomer);
 
-router.get("/:id", checkAuth, extractFile, CustomerController.getInfoCustomerFromManager);
+router.get("/:id", checkAuth, CustomerController.getInfoCustomerFromManager);
 
-router.put('/info/edit', checkAuth, extractFile, CustomerController.updateInfo);
+router.put('/info/edit', checkAuth, CustomerController.updateInfo);
+
+router.put('/password', checkAuth, CustomerController.changePassword );
+
+router.delete('/delete/:id', checkAuth, CustomerController.deleteAccount);
 module.exports = router;

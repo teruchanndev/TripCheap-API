@@ -17,6 +17,6 @@ const ticketSchema = mongoose.Schema({
   services: { type: Array },
   address: { type: String },
   creator: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
-});
+}, { timestamps: { createdAt: 'created_at' } });
 
 module.exports = mongoose.model('Ticket', ticketSchema);

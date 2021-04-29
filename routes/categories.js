@@ -12,7 +12,7 @@ router.put("/:id", CategoriesController.updateCategory);
 //lấy danh sách category
 router.get("", CategoriesController.getAllCategory);
 
-router.get("/:id", CategoriesController.getOneCategory);
+router.get("/:name", CategoriesController.getOneCategory);
 
 //xóa 1 phần tử trong mảng categoryItem
 router.delete("/:id/:ItemInCategoryItem", CategoriesController.deleteCategoryItem );
