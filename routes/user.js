@@ -1,7 +1,6 @@
 const express = require("express");
 const UserController = require("../controllers/user");
 
-const extractFile = require('../middleware/file');
 const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
@@ -10,7 +9,12 @@ router.post('/signup', UserController.createUser);
 
 router.post('/login', UserController.userLogin );
 
-router.get("/info", checkAuth, extractFile, UserController.getInfoUser);
+router.get("/info", checkAuth, UserController.getInfoUser);
 
-router.put('/info/edit', checkAuth, extractFile, UserController.updateInfo);
+router.put('/info/edit', checkAuth, UserController.updateInfo);
+
+router.put('/password', checkAuth, UserController.changePassword);
+
+router.delete('/delete/:id', checkAuth, UserController.deleteAccount);
+
 module.exports = router;
