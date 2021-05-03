@@ -97,30 +97,30 @@ console.log('res: ' + req.userData.userId);
 }
 
 exports.updateInfo = (req, res, next) => {
-    const url = req.protocol + "://" + req.get("host");
+    // const url = req.protocol + "://" + req.get("host");
 
-    if(req.files.length >= 2) {
-        iAvt = url + '/images/' + req.files[0].filename;
-        iCover = url + '/images/' + req.files[1].filename;
-    } 
-    else if(req.files.length <= 0) {
-        iAvt = req.body.iAvt;
-        iCover = req.body.iCover;
-    } else {
-        if(req.body.iAvt){
-            iAvt = req.body.iAvt;
-            iCover = url + '/images/' + req.files[0].filename;
-        }
-        if(req.body.iCover){
-            iAvt = url + '/images/' + req.files[0].filename;
-            iCover = req.body.iCover;
-        }
-    }
+    // if(req.files.length >= 2) {
+    //     iAvt = url + '/images/' + req.files[0].filename;
+    //     iCover = url + '/images/' + req.files[1].filename;
+    // } 
+    // else if(req.files.length <= 0) {
+    //     iAvt = req.body.iAvt;
+    //     iCover = req.body.iCover;
+    // } else {
+    //     if(req.body.iAvt){
+    //         iAvt = req.body.iAvt;
+    //         iCover = url + '/images/' + req.files[0].filename;
+    //     }
+    //     if(req.body.iCover){
+    //         iAvt = url + '/images/' + req.files[0].filename;
+    //         iCover = req.body.iCover;
+    //     }
+    // }
     const infoUser = new User({
         _id: req.userData.userId,
         nameShop: req.body.nameShop,
-        imageAvt: iAvt,
-        imageCover: iCover,
+        imageAvt: req.body.imageAvt,
+        imageCover: req.body.imageCover,
         desShop: req.body.desShop
     });
 
@@ -139,3 +139,39 @@ exports.updateInfo = (req, res, next) => {
           })
     })
 }
+
+exports.changePassword = (req, res, next) => {
+    bcrypt.hash(req.body, 10)
+        .then(hash => {
+            User.updateOne({ _id: req.userData.userId}, {password: hash})
+                .then(result => 
+                    {
+                        res.status(200).json({
+                            message: 'Change password successfully!',
+                            result: result
+                        })
+                    }).catch(error => {
+                        res.status(500).json({
+                            message: 'Change password failed!',
+                            error: error
+                        })
+                    });
+        });
+  }
+
+  exports.deleteAccount = (req, res, next) => {
+    // console.log('----------------');
+    // console.log('req: ', req.params)
+    User.deleteOne({ _id: req.params.id}).then(
+        result => {
+        if(result.n > 0) {
+          res.status(200).json({ message: "Xóa tài khoản thành công!" });
+         } else {
+          res.status(401).json({ message: "Chưa đăng nhập!" });
+         }
+      }).catch(error => {
+        res.status(500).json({
+          message: 'Xóa tài khoản thất bại!'
+        })
+      })
+  }
