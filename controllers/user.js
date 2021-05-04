@@ -119,8 +119,8 @@ exports.updateInfo = (req, res, next) => {
     const infoUser = new User({
         _id: req.userData.userId,
         nameShop: req.body.nameShop,
-        imageAvt: req.body.imageAvt,
-        imageCover: req.body.imageCover,
+        imageAvt: req.body.iAvt,
+        imageCover: req.body.iCover,
         desShop: req.body.desShop
     });
 
