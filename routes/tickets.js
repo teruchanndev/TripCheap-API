@@ -27,4 +27,6 @@ router.delete("/:id", checkAuth, TicketController.deleteOneTicket);
 
 router.put("/update/:id", checkAuth, TicketController.updateTicketQuantity);
 
+router.delete("/list/:id", checkAuth, TicketController.deleteListTicket);
+
 module.exports = router;

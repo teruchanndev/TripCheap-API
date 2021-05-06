@@ -203,3 +203,25 @@ exports.updateTicketQuantity = (req, res, next) => {
 
 }
 
+
+exports.deleteListTicket = (req, res, next) => {
+  // console.log('----------------------------------------------------------');
+  // console.log(req.params.id);
+
+  arrId = req.params.id.split(',');
+  for(let item of arrId) {
+    console.log(item);
+    Ticket.deleteOne({ _id: item }).then(
+    result => {
+      if(result.n > 0) {
+        res.status(200).json({ message: "Ticket deleted!" });
+      } else {
+        res.status(401).json({ message: "Not authorized!" + result });
+      }
+    }).catch(error => {
+      res.status(500).json({
+        message: 'Delete ticket failed!'
+      })
+    })
+  }
+}
