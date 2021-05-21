@@ -1,7 +1,5 @@
 const express = require("express");
 const CustomerController = require("../controllers/customers");
-
-const extractFile = require('../middleware/file');
 const checkAuth = require('../middleware/check-auth-customer');
 
 const router = express.Router();
