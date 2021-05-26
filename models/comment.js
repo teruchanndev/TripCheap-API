@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const commentSchema = mongoose.Schema({
     idUser: { type: String },
+    nameUser: { type: String },
     idTicket: { type: String },
     idCreator: { type: String },
     message: { type: String },
@@ -10,6 +11,6 @@ const commentSchema = mongoose.Schema({
     likeCount: { type: Number },
     // name: { type: String, required: true },
     // image: { type: String },
-});
+},{ timestamps: { createdAt: 'created_at' } });
 
 module.exports = mongoose.model('Comment', commentSchema);
