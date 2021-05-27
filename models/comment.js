@@ -7,9 +7,10 @@ const commentSchema = mongoose.Schema({
     idCreator: { type: String },
     message: { type: String },
     images: { type: Array },
-    rating: { type: Number },
     likeCount: { type: Number },
-    isMyLike: { type: Boolean }
+    disLikeCount: { type: Number },
+    listUserLike: { type: Array },
+    listUserDisLike: { type: Array }
     // name: { type: String, required: true },
     // image: { type: String },
 }, { timestamps: { createdAt: 'created_at' } });

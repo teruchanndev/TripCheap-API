@@ -9,9 +9,10 @@ exports.createComment = (req, res, next) => {
         username : req.body.username,
         message : req.body.message,
         images : req.body.images,
-        rating : req.body.rating,
         likeCount : req.body.likeCount,
-        isMyLike: req.body.isMyLike
+        disLikeCount: req.body.disLikeCount,
+        listUserLike : req.body.listUserLike,
+        listUserDisLike: req.body.listUserDisLike
     });
     comment.save().then(createComment => {
       res.status(201).json({
@@ -36,23 +37,64 @@ exports.getCommentOfTicket = (req, res, next) => {
 }
 
 exports.updateIsLike = (req, res, next) => {
+  // console.log('--------------------------------------- ');
+  Comment.find({ _id: req.params.idComment }).then(document => {
+    var likeCount;
 
-  Comment.updateOne({_id: req.params.idComment},  
-    { $set: { likeCount: req.body.likeCount, isMyLike: req.body.isMyLike } })
-  .then(result => {
-    res.status(200).json(
-      { 
-        message: "Update successful!",
-        status: true
-      });
-  }).catch(error => {
-    res.status(500).json(
-      {
-        message: error,
-        status: false,
-      });
+    if(req.body.ischeckLike) {
+      likeCount = document[0].likeCount + 1;
+      document[0].listUserLike.push(req.userData.customerId);
+    } else {
+      likeCount = document[0].likeCount - 1;
+      var removeIndex = document[0].listUserLike.indexOf(req.userData.customerId);
+      document[0].listUserLike.splice(removeIndex, 1);
     }
-  );
+  
+    // console.log('docs: ', document[0].listUserLike);
+    Comment.updateOne({_id: req.params.idComment},  
+      {
+        $set: { likeCount: likeCount, listUserLike: document[0].listUserLike }, 
+      }).then(result => {
+      res.status(200).json(
+        { 
+          message: "Update successful!",
+          status: true
+        });
+    }).catch(error => {
+      res.status(500).json(
+        {
+          message: error,
+          status: false,
+        });
+      }
+    );
+  })
+}
+
+exports.updateIsDisLike = (req, res, next) => {
+  Comment.find({ _id: req.params.idComment }).then(document => {
+    var disLikeCount = document[0].disLikeCount + 1;
+    document[0].listUserDisLike.push(req.userData.customerId);
+
+    console.log('docs: ', document[0].listUserDisLike);
+    Comment.updateOne({_id: req.params.idComment},  
+      {
+        $set: { disLikeCount: disLikeCount, listUserDisLike: document[0].listUserDisLike }, 
+      }).then(result => {
+      res.status(200).json(
+        { 
+          message: "Update successful!",
+          status: true
+        });
+    }).catch(error => {
+      res.status(500).json(
+        {
+          message: error,
+          status: false,
+        });
+      }
+    );
+  })
 }
 
 exports.deleteComment = (req, res, next) => {
