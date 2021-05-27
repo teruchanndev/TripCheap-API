@@ -1,8 +1,13 @@
 const express = require("express");
-const router = express.Router();
-const CommentController = require("../controllers/comment");
 
-router.get('/:ticketId', CommentController.getCommentOfTicket);
-router.post('', CommentController.createComment);
+const CommentController = require("../controllers/comment");
+const checkAuth = require('../middleware/check-auth-customer');
+
+const router = express.Router();
+
+router.get("/:ticketId", CommentController.getCommentOfTicket);
+router.post("", checkAuth, CommentController.createComment);
+router.put("/:idComment", checkAuth, CommentController.updateIsLike);
+router.delete("/:idComment", checkAuth, CommentController.deleteComment);
 
 module.exports = router;
