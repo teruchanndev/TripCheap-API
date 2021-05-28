@@ -23,8 +23,9 @@ exports.createComment = (req, res, next) => {
 }
 
 exports.getCommentOfTicket = (req, res, next) => {
-
+  console.log('--------------------------------------- ');
     Comment.find({idTicket: req.params.ticketId}).then(documents => {
+        console.log('documents',  documents);
         res.status(200).json({
           message: "Comments fetched successfully!",
           comment: documents
@@ -37,11 +38,13 @@ exports.getCommentOfTicket = (req, res, next) => {
 }
 
 exports.updateIsLike = (req, res, next) => {
-  // console.log('--------------------------------------- ');
+  console.log('--------------------------------------- ');
+  console.log('req.body: ', req.body);
   Comment.find({ _id: req.params.idComment }).then(document => {
+    
     var likeCount;
 
-    if(req.body.ischeckLike) {
+    if(req.body.isCheckLike) {
       likeCount = document[0].likeCount + 1;
       document[0].listUserLike.push(req.userData.customerId);
     } else {
@@ -50,7 +53,7 @@ exports.updateIsLike = (req, res, next) => {
       document[0].listUserLike.splice(removeIndex, 1);
     }
   
-    // console.log('docs: ', document[0].listUserLike);
+    console.log('docs: ', document[0].listUserLike);
     Comment.updateOne({_id: req.params.idComment},  
       {
         $set: { likeCount: likeCount, listUserLike: document[0].listUserLike }, 
