@@ -17,7 +17,7 @@ exports.createRated = (req, res, next) => {
 }
 
 exports.getRated = (req, res, next) => {
-    Rated.find({ idTicket: req.params.ticketId}).then(documents => {
+    Rated.findOne({ idTicket: req.params.ticketId}).then(documents => {
         res.status(200).json({
             message: "Rated fetched successfully!",
             rated: documents,
@@ -35,11 +35,7 @@ exports.getRated = (req, res, next) => {
 exports.addRatedByUser = (req, res, next) => {
     Rated.find({ idTicket: req.params.ticketId}).then(document => {
 
-        document[0].listUserRated.push({
-            idUser: req.body.idUser,
-            nameUser: req.body.nameUser,
-            rating: req.body.rating
-        });
+        document[0].listUserRated.push(req.body.listUserRated);
 
         var total = document[0].pointRated * document[0].countRated;
         var totalNew = req.body.rating + total; 
@@ -68,11 +64,22 @@ exports.addRatedByUser = (req, res, next) => {
 
 exports.deleteRatedByUser = (req, res, next) => {
     Rated.find({ idTicket: req.params.ticketId}).then(document => {
+
         var removeIndex = document[0].listUserRated.map(function(item) { return item.idUser; }).indexOf(req.body.idUser);
+        var ratingOfUser = document[0].listUserRated[removeIndex].rating; 
+
         document[0].listUserRated.splice(removeIndex, 1);
+        
+        var totalNew = req.body.rating - ratingOfUser; 
+        var countNew = document[0].countRated - 1;
+        var pointNew = totalNew / countNew;
 
         Rated.updateOne({_id: document[0]._id}, { 
-            $set: { listUserRated: document[0].listUserRated } }).then(result => {
+            $set: { 
+                listUserRated: document[0].listUserRated,
+                pointRated: pointNew,
+                countRated: countNew } 
+            }).then(result => {
                 res.status(200).json({ 
                     message: "Delete successful!",
                     status: true
