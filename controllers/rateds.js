@@ -20,7 +20,7 @@ exports.getRated = (req, res, next) => {
     Rated.find({ idTicket: req.params.ticketId}).then(documents => {
         res.status(200).json({
             message: "Rated fetched successfully!",
-            comment: documents,
+            rated: documents,
             status: true
           });
 

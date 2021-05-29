@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("", checkAuthCustomer, RatedController.createRated);
 router.get("/:ticketId", RatedController.getRated);
-router.put("/:idTicket", checkAuthCustomer, RatedController.addRatedByUser);
-router.put("/delete/:idTicket", checkAuthCustomer, RatedController.deleteRatedByUser);
+router.put("/:ticketId", checkAuthCustomer, RatedController.addRatedByUser);
+router.put("/delete/:ticketId", checkAuthCustomer, RatedController.deleteRatedByUser);
 
 module.exports = router;

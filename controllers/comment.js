@@ -2,46 +2,43 @@ const Comment = require("../models/comment");
 
 exports.createComment = (req, res, next) => {
 
-    const comment = new Comment({
-        idUser : req.body.idUser,
-        idTicket : req.body.idTicket,
-        idCreator : req.body.idCreator,
-        username : req.body.username,
-        message : req.body.message,
-        images : req.body.images,
-        likeCount : req.body.likeCount,
-        disLikeCount: req.body.disLikeCount,
-        listUserLike : req.body.listUserLike,
-        listUserDisLike: req.body.listUserDisLike
+  const comment = new Comment({
+      idUser : req.body.idUser,
+      idTicket : req.body.idTicket,
+      idCreator : req.body.idCreator,
+      username : req.body.username,
+      message : req.body.message,
+      images : req.body.images,
+      likeCount : req.body.likeCount,
+      disLikeCount: req.body.disLikeCount,
+      listUserLike : req.body.listUserLike,
+      listUserDisLike: req.body.listUserDisLike
+  });
+  comment.save().then(createComment => {
+    res.status(201).json({
+      message: "Comment added successfully",
+      comment: createComment
     });
-    comment.save().then(createComment => {
-      res.status(201).json({
-        message: "Comment added successfully",
-        comment: createComment
-      });
-    });
+  });
 }
 
 exports.getCommentOfTicket = (req, res, next) => {
-  console.log('--------------------------------------- ');
-    Comment.find({idTicket: req.params.ticketId}).then(documents => {
-        console.log('documents',  documents);
-        res.status(200).json({
-          message: "Comments fetched successfully!",
-          comment: documents
-        });
-      }).catch(error => {
-        res.status(500).json({
-          message: 'Fetching comments failed!'
-        })
-    });
+
+  Comment.find({idTicket: req.params.ticketId}).then(documents => {
+      res.status(200).json({
+        message: "Comments fetched successfully!",
+        comment: documents
+      });
+    }).catch(error => {
+      res.status(500).json({
+        message: 'Fetching comments failed!'
+      })
+  });
 }
 
 exports.updateIsLike = (req, res, next) => {
-  console.log('--------------------------------------- ');
-  console.log('req.body: ', req.body);
-  Comment.find({ _id: req.params.idComment }).then(document => {
-    
+
+  Comment.find({ _id: req.params.idComment }).then(document => {    
     var likeCount;
 
     if(req.body.isCheckLike) {
