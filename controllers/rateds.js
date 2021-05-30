@@ -33,8 +33,12 @@ exports.getRated = (req, res, next) => {
 }
 
 exports.addRatedByUser = (req, res, next) => {
+    console.log('---------------------------------');
+    console.log('body: ', req.body);
     Rated.find({ idTicket: req.params.ticketId}).then(document => {
-
+        console.log('document ',document);
+        console.log('document[0] ',document[0]);
+        console.log('document[0].listUserRated ',document[0].listUserRated);
         document[0].listUserRated.push(req.body.listUserRated);
 
         var total = document[0].pointRated * document[0].countRated;

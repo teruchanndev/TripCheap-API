@@ -1,4 +1,5 @@
 const Ticket = require("../models/ticket");
+const Rated = require("../models/rated");
 
 exports.createTicket = (req, res, next) => {
   const ticket = new Ticket({
@@ -74,11 +75,14 @@ exports.getAllTicket = (req, res, next) => {
   Ticket.find({creator: req.userData.userId}).then(documents => {
     res.status(200).json({
       message: "Tickets fetched successfully!",
+      status: true,
       ticket: documents
     });
   }).catch(error => {
     res.status(500).json({
-      message: 'Fetching tickets failed!'
+      message: 'Fetching tickets failed!',
+      error: error,
+      status: false
     })
   })
 }
@@ -111,9 +115,6 @@ exports.getTicketOfSearch = (req, res, next) => {
     })
   })
 }
-
-
-
 
 
 exports.getAll = (req, res, next) => {
@@ -174,19 +175,16 @@ exports.getTicketOfCategory = (req, res, next) => {
   }).catch(error => {
     res.status(500).json({
       message: 'Fetching tickets failed!'
-    })
+    });
   })
 }
 
 exports.updateTicketQuantity = (req, res, next) => {
-  // console.log('---------------------');
-  // console.log(req.body);
 
   Ticket.find({_id: req.params.id}).then(ticket => {
-    // console.log('ticket quantity: ', ticket[0].quantity);
-    // console.log('quantity: ', req.body.quantity);
+
     var quantityNew = ticket[0].quantity - req.body.quantity;
-    // console.log('quantityNew: ', quantityNew);
+
     Ticket.updateOne({_id: req.params.id}, {quantity: quantityNew}).then(result => {
       if(result.n > 0) {
         res.status(200).json({ message: "Update successful!" });
@@ -194,19 +192,37 @@ exports.updateTicketQuantity = (req, res, next) => {
         res.status(401).json({
           message: "Not authorized!" });
       }
-  }).catch(error => {
-    res.status(500).json({
-      message: "Couldn't update ticket!"
+    }).catch(error => {
+      res.status(500).json({
+        message: "Couldn't update ticket!"
+      });
     });
   });
-  });
+}
 
+exports.getTicketHightRating = (req, res, next) => {
+
+  Rated.find({pointRated: 5}).then(rated => {
+    var arrId = [];
+    rated.forEach(el => {
+      arrId.push(el.idTicket);
+    });
+
+    Ticket.find({_id: arrId}).then(result => {
+      res.status(200).json({
+        message: "Tickets fetched successfully!",
+        ticket: result
+      });
+    }).catch(err => {
+      res.status(500).json({
+        message: "Couldn't update ticket!"
+      });
+    });
+  });
 }
 
 
 exports.deleteListTicket = (req, res, next) => {
-  // console.log('----------------------------------------------------------');
-  // console.log(req.params.id);
 
   arrId = req.params.id.split(',');
   for(let item of arrId) {

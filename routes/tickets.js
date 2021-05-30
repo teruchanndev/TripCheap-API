@@ -23,6 +23,8 @@ router.get("/search/:search", TicketController.getTicketOfSearch);
 
 router.get("/:id", TicketController.getOneTicket);
 
+router.get("/hightRating/:point", TicketController.getTicketHightRating);
+
 router.delete("/:id", checkAuth, TicketController.deleteOneTicket);
 
 router.put("/update/:id", checkAuth, TicketController.updateTicketQuantity);
