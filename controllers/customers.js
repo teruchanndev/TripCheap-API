@@ -30,41 +30,47 @@ exports.customerLogin = (req, res, next) => {
   let fetchCustomer;
   Customer.findOne({email: req.body.email})
       .then(customer => {
-          if(!customer) {
-              return res.status(401).json({
-                  message: 'Auth failed!'
-              });
-          }
-          console.log('customer check: ' + customer);
-          fetchCustomer = customer;
+        if(!customer) {
+            return res.status(401).json({
+                message: 'Email bạn nhập sai hoặc không có!'
+            });
+        }
+        //   console.log('customer check: ' + customer);
+        fetchCustomer = customer;
         //   console.log(req.body.password + ' and '+ customer.password);
-          return bcrypt.compare(req.body.password, customer.password);
+        return bcrypt.compare(req.body.password, customer.password);
       })
       .then(result => {
-          console.log('result: ' + result);
-          if(!result) {
-              return res.status(401).json({
-                  message: 'Auth failed!' + result
-              });
-          }
-          const token = jwt.sign(
-              {email: fetchCustomer.email, customerId: fetchCustomer._id},
-              "secret_this_should_be_longer",
-              {expiresIn: '1h'}
-          );
-          console.log('token: ' + token);
-          res.status(200).json({
-              token: token,
-              expiresIn: 3600,
-              customerId: fetchCustomer._id,
-              username: fetchCustomer.username,
-              created_at: fetchCustomer.created_at
-          })
+        console.log('result: ' + result);
+        if(!result) {
+            return res.status(401).json({
+                message: 'Nhập sai password'
+            });
+        }
+        const token = jwt.sign(
+            {
+                email: fetchCustomer.email, 
+                customerId: fetchCustomer._id
+            },
+            "secret_this_should_be_longer",
+            {
+                expiresIn: '1h'
+            }
+        );
+        //   console.log('token: ' + token);
+        res.status(200).json({
+            token: token,
+            expiresIn: 3600,
+            customerId: fetchCustomer._id,
+            username: fetchCustomer.username,
+            created_at: fetchCustomer.created_at,
+            message: 'Đăng nhập thành công'
+        })
 
       })
       .catch(err => {
           return res.status(401).json({
-              message: 'Auth failed!' + err
+              message: 'Email bạn nhập sai hoặc không có!'
           });
       });
 }
