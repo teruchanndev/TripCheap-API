@@ -35,13 +35,10 @@ exports.customerLogin = (req, res, next) => {
                 message: 'Email bạn nhập sai hoặc không có!'
             });
         }
-        //   console.log('customer check: ' + customer);
         fetchCustomer = customer;
-        //   console.log(req.body.password + ' and '+ customer.password);
         return bcrypt.compare(req.body.password, customer.password);
       })
       .then(result => {
-        console.log('result: ' + result);
         if(!result) {
             return res.status(401).json({
                 message: 'Nhập sai password'
@@ -77,7 +74,6 @@ exports.customerLogin = (req, res, next) => {
 
 
 exports.getInfoCustomer = (req, res, next) => {
-//   console.log('res: ' + req.userData.userId);
   Customer.findById({_id: req.userData.customerId})
     .then(documents => {
         if(documents) {

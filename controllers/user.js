@@ -29,45 +29,47 @@ exports.createUser = (req, res, next) => {
 exports.userLogin = (req, res, next) => {
   let fetchUser;
   User.findOne({email: req.body.email})
-      .then(user => {
-          if(!user) {
-              return res.status(401).json({
-                  message: 'Auth failed!' + user
-              });
-          }
-          console.log('user check: ' + user);
-          fetchUser = user;
-          console.log(req.body.password + ' and '+ user.password);
-          return bcrypt.compare(req.body.password, user.password);
-      })
-      .then(result => {
-          console.log('result: ' + result);
-          if(!result) {
-              return res.status(401).json({
-                  message: 'Auth failed!' + result
-              });
-          }
-          const token = jwt.sign(
-              {email: fetchUser.email, userId: fetchUser._id},
-              "secret_this_should_be_longer",
-              {expiresIn: '1h'}
-          );
-          console.log('token: ' + token);
+    .then(user => {
+        if(!user) {
+            return res.status(401).json({
+                message: 'Email bạn nhập sai hoặc không có!'
+            });
+        }
+        fetchUser = user;
+        return bcrypt.compare(req.body.password, user.password);
+    })
+    .then(result => {
+        if(!result) {
+            return res.status(401).json({
+                message: 'Nhập sai password'
+            });
+        }
+        const token = jwt.sign(
+        {
+            email: fetchUser.email, 
+            userId: fetchUser._id
+        },
+        "secret_this_should_be_longer",
+        {
+            expiresIn: '1h'
+        }
+        );
 
-          res.status(200).json({
-              token: token,
-              expiresIn: 3600,
-              userId: fetchUser._id,
-              username: fetchUser.username,
-              created_at: fetchUser.created_at
-          })
+        res.status(200).json({
+            token: token,
+            expiresIn: 3600,
+            userId: fetchUser._id,
+            username: fetchUser.username,
+            created_at: fetchUser.created_at,
+            message: 'Đăng nhập thành công'
+        })
 
-      })
-      .catch(err => {
-          return res.status(401).json({
-              message: 'Auth failed!' + err
-          });
-      });
+    })
+    .catch(err => {
+        return res.status(401).json({
+            message: 'Email bạn nhập sai hoặc không có!'
+        });
+    });
 }
 
 exports.getUsername = (req, res, next) => {
@@ -97,25 +99,6 @@ console.log('res: ' + req.userData.userId);
 }
 
 exports.updateInfo = (req, res, next) => {
-    // const url = req.protocol + "://" + req.get("host");
-
-    // if(req.files.length >= 2) {
-    //     iAvt = url + '/images/' + req.files[0].filename;
-    //     iCover = url + '/images/' + req.files[1].filename;
-    // } 
-    // else if(req.files.length <= 0) {
-    //     iAvt = req.body.iAvt;
-    //     iCover = req.body.iCover;
-    // } else {
-    //     if(req.body.iAvt){
-    //         iAvt = req.body.iAvt;
-    //         iCover = url + '/images/' + req.files[0].filename;
-    //     }
-    //     if(req.body.iCover){
-    //         iAvt = url + '/images/' + req.files[0].filename;
-    //         iCover = req.body.iCover;
-    //     }
-    // }
     const infoUser = new User({
         _id: req.userData.userId,
         nameShop: req.body.nameShop,

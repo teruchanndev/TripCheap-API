@@ -73,8 +73,6 @@ exports.getOneCart = (req, res, next) => {
 }
 
 exports.deleteCart = (req, res, next) => {
-  // console.log('----------------------------------------------------------');
-  // console.log(req.params.id);
 
   arrId = req.params.id.split(',');
   for(let item of arrId) {
